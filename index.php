@@ -28,7 +28,7 @@ spl_autoload_register(function ($class) {
 </head>
 <body>
 
-    <img src="logo.png" alt="">
+    <img src="logo.png" alt="exeter logo">
 
     <form action="handler.php" method="post">
         <p>
