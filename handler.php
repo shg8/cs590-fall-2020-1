@@ -32,16 +32,16 @@ function bad()
     echo "<a href='index.php'>Go back to log in page</a> <br><br>";
 }
 
+session_start();
+
 if(isset($_POST['logbutton'])) { 
     $_SESSION['login'] = "NO";
     $_SESSION['user'] = "";
     $_SESSION['pwd'] = "";
-    session_destroy();
+    //session_destroy();
     header("Location: index.php");
 }
 
-
-session_start();
 if (isset($_POST['user']))
 {
     $_SESSION['user'] = $_POST['user'];
