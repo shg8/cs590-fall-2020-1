@@ -21,7 +21,7 @@
 function good()
 {
     echo "<h1>You have successfully logged in </h1>";
-    $_SESSION["login"] = "YES";
+    $_SESSION['login'] = "YES";
     
     echo "<h3>Welcome " . $_SESSION['user'] . "</h3>";
 }  
@@ -33,9 +33,11 @@ function bad()
 }
 
 if(isset($_POST['logbutton'])) { 
-    $_SESSION["login"] = "NO";
-    bad();
-    exit;
+    $_SESSION['login'] = "NO";
+    $_SESSION['user'] = "";
+    $_SESSION['pwd'] = "";
+    session_destroy();
+    header("Location: index.php");
 }
 
 
@@ -43,14 +45,15 @@ session_start();
 if (isset($_POST['user']))
 {
     $_SESSION['user'] = $_POST['user'];
-    $_SESSION["login"] = "NO";
+    $_SESSION['pwd'] = $_POST['pwd'];
+    $_SESSION['login'] = "NO";
 }
 
 // Connect to database server
 $link = mysqli_connect("localhost", "root", "") or die (mysqli_error($link));
 
 // Select database
-mysqli_select_db($link, "login") or die(mysqli_error($link));
+mysqli_select_db($link, 'login') or die(mysqli_error($link));
 
 // The SQL statement is built
 $strSQL = "SELECT * FROM users";
@@ -59,18 +62,18 @@ $rs = mysqli_query($link, $strSQL);
 
 $isIn = false;
 
-if ($_SESSION["login"] == "YES")
+if ($_SESSION['login'] == "YES")
 {
     good();
 }
 else
 {
-    $_SESSION["login"] = "NO";
+    $_SESSION['login'] = "NO";
 
     while($row = mysqli_fetch_array($rs)) 
     {
         //echo $row['username'] . " " . $row['password'] . "<br>";
-        if ($_POST['user'] == $row['username'] and $_POST['pwd'] == $row['password'])
+        if ($_SESSION['user'] == $row['username'] and $_SESSION['pwd'] == $row['password'])
         {
             $isIn = true;
             //$_SESSION['user'] = $_POST['user'];
@@ -86,7 +89,7 @@ else
 }
 
 
-//$_SESSION["login"] = "YES";
+//$_SESSION['login'] = "YES";
 
 // Close the database connection
 mysqli_close($link);
