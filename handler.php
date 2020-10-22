@@ -2,8 +2,20 @@
 <html lang="en">
 <head>
     <title>Verification</title>
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        h3 {
+            color: green;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 </head>
 <body>
+
+
 <?php 
 
 function good()
@@ -11,7 +23,7 @@ function good()
     echo "<h1>You have successfully logged in </h1>";
     $_SESSION["login"] = "YES";
     
-    
+    echo "<h3>Welcome " . $_SESSION['user'] . "</h3>";
 }  
 
 function bad()
@@ -20,7 +32,19 @@ function bad()
     echo "<a href='index.php'>Go back to log in page</a> <br><br>";
 }
 
+if(isset($_POST['logbutton'])) { 
+    $_SESSION["login"] = "NO";
+    bad();
+    exit;
+}
+
+
 session_start();
+if (isset($_POST['user']))
+{
+    $_SESSION['user'] = $_POST['user'];
+    $_SESSION["login"] = "NO";
+}
 
 // Connect to database server
 $link = mysqli_connect("localhost", "root", "") or die (mysqli_error($link));
@@ -49,6 +73,8 @@ else
         if ($_POST['user'] == $row['username'] and $_POST['pwd'] == $row['password'])
         {
             $isIn = true;
+            //$_SESSION['user'] = $_POST['user'];
+            //echo $_SESSION['user'] . "</br>";
             good();
         }
     }
@@ -66,5 +92,12 @@ else
 mysqli_close($link);
 
 ?>
+<br><br><br><br>
+
+<form method="post"> 
+    <button type="submit" class="btn btn-primary" name="logbutton">Log Out</button>
+</form> 
+
+
 </body>
 </html>
