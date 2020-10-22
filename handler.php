@@ -6,9 +6,19 @@
 <body>
 <?php 
 
-// how to access the username and password passed in from the form
-echo "user:". $_POST['user'] . "<br>";
-echo "pwd:" . $_POST['pwd'] . "<br>";
+function good()
+{
+    echo "<h1>You have successfully logged in </h1>";
+    $_SESSION["login"] = "YES";
+    
+    
+}  
+
+function bad()
+{
+    echo "<h1>You have failed to login.</h1>";
+    echo "<a href='index.php'>Go back to log in page</a> <br><br>";
+}
 
 session_start();
 
@@ -22,22 +32,33 @@ mysqli_select_db($link, "login") or die(mysqli_error($link));
 $strSQL = "SELECT * FROM users";
 
 $rs = mysqli_query($link, $strSQL);
-	
-// Loop the recordset $rs
-// Each row will be made into an array ($row) using mysql_fetch_array
-$_SESSION["login"] = "NO";
 
-while($row = mysqli_fetch_array($rs)) {
-	// Write the value of the column FirstName (which is now in the array $row)
-    echo $row['username'] . "<br /> password:" . $row['password'] . "<br>";
-    
-    if ($_POST['user'] ==  $row['username'] and $_POST['pwd'] == $row['password'])
+$isIn = false;
+
+if ($_SESSION["login"] == "YES")
+{
+    good();
+}
+else
+{
+    $_SESSION["login"] = "NO";
+
+    while($row = mysqli_fetch_array($rs)) 
     {
-        echo "Yes <br>";
-        echo "<br><br> <a href='protected.php'>Link to protected file</a> <br><br>s";
-        $_SESSION["login"] = "YES";
+        //echo $row['username'] . " " . $row['password'] . "<br>";
+        if ($_POST['user'] == $row['username'] and $_POST['pwd'] == $row['password'])
+        {
+            $isIn = true;
+            good();
+        }
+    }
+
+    if (!$isIn)
+    {
+        bad();
     }
 }
+
 
 //$_SESSION["login"] = "YES";
 
